@@ -71,9 +71,9 @@ class FileStorage(Persistance):
         if self.__objects.get(f"{type(object).__name__}_{object.id}"):
             del self.__objects[f"{type(object).__name__}_{object.id}"]
 
-    def get(self, classname, id):
+    def get(self, key):
         """ Get a specific element from storage """
-        return self.__objects.get(f"{classname}_{id}")
+        return self.__objects.get(key)
 
     def all(self, classname=None):
         """ Returns all elements of a specific class in storage """

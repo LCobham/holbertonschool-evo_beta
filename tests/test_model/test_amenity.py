@@ -18,6 +18,10 @@ class TestAmenity(unittest.TestCase):
         self.assertIsInstance(self.amenity, Amenity)
         self.assertEqual(type(self.amenity), Amenity)
 
+    def test_setters(self):
+        with self.assertRaises(TypeError):
+            self.amenity.name = 22
+
     def test_attrs(self):
         am = self.amenity
         self.assertTrue(hasattr(am, 'id'))
@@ -27,7 +31,7 @@ class TestAmenity(unittest.TestCase):
 
     def test_mandatory_fields(self):
         with self.assertRaises(TypeError):
-            am = Amenity()
+            Amenity()
 
     def test_inherited_methods(self):
         am = self.amenity

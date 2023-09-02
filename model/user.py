@@ -3,7 +3,6 @@
     This module defines the User Class for the AirBnB clone
 """
 from model.base import BaseModel
-from datetime import datetime
 
 
 class User(BaseModel):
@@ -21,37 +20,54 @@ class User(BaseModel):
             - constructor: Recreate a User object from a dictionary
             previously obtained with the `to_dict()` method
     """
+    __required = ('email', 'password', 'first_name', 'last_name')
 
-    def __init__(self, email, password, first_name='', last_name=''):
+
+    def __init__(self, email, password, first_name, last_name):
+
         BaseModel.__init__(self)
-        if not email or not password:
-            raise AttributeError('email or password missing')
 
-        self.email = email
-        self.password = password
-        self.first_name = first_name
-        self.last_name = last_name
+        self.__email = email
+        self.__password = password
+        self.__first_name = first_name
+        self.__last_name = last_name
 
-    @classmethod
-    def constructor(cls, dictionary):
-        required = {
-            'email': dictionary.get('email'),
-            'password': dictionary.get('password')
-            }
+    @property
+    def email(self):
+        return self.__email
+    
+    @email.setter
+    def email(self, mail):
+        if type(mail) is not str:
+            raise TypeError('email must be a string')
+        self.__email = mail
+    
+    @property
+    def password(self):
+        return self.__password
+    
+    @password.setter
+    def password(self, pswd):
+        if type(pswd) is not str:
+            raise TypeError('password must be a string')
+        self.__password = pswd
 
-        new_user = cls(**required)
-        keys = dictionary.keys()
+    @property
+    def first_name(self):
+        return self.__first_name
+    
+    @first_name.setter
+    def first_name(self, name):
+        if type(name) is not str:
+            raise TypeError('first_name must be a string')
+        self.__first_name = name
 
-        if '__class__' in keys:
-            del dictionary['__class__']
-
-        if 'created_at' in keys and type(dictionary['created_at']) is datetime:
-            dictionary['created_at'] = \
-                datetime.fromisoformat(dictionary['created_at'])
-
-        if 'updated_at' in keys and type(dictionary['updated_at']) is datetime:
-            dictionary['updated_at'] = \
-                datetime.fromisoformat(dictionary['updated_at'])
-
-        new_user.__dict__.update(dictionary)
-        return new_user
+    @property
+    def last_name(self):
+        return self.__last_name
+    
+    @last_name.setter
+    def last_name(self, surname):
+        if type(surname) is not str:
+            raise TypeError('last_name must be a string')
+        self.__last_name = surname

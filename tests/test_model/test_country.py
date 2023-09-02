@@ -27,7 +27,17 @@ class TestCountry(unittest.TestCase):
 
     def test_mandatory_fields(self):
         with self.assertRaises(TypeError):
-            country = Country()
+            Country()
+
+    def test_setters(self):
+        with self.assertRaises(TypeError):
+            self.country.name = 22
+
+        with self.assertRaises(TypeError):
+            self.country.iso = (1, 2, 3)
+        
+        with self.assertRaises(AttributeError):
+            self.country.iso = 'STRING IS TOO LONG'
 
     def test_inherited_methods(self):
         country = self.country

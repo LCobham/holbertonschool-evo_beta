@@ -3,7 +3,6 @@
     This module defines the Amenity Class for the AirBnB clone
 """
 from model.base import BaseModel
-from datetime import datetime
 
 
 class Amenity(BaseModel):
@@ -19,29 +18,19 @@ class Amenity(BaseModel):
             - constructor: Recreate a User object from a dictionary
             previously obtained with the `to_dict()` method
     """
+    __required = ('name', )
+
+
     def __init__(self, name):
         BaseModel.__init__(self)
-        self.name = name
+        self.__name = name
 
-    @classmethod
-    def constructor(cls, dictionary):
-        required = {
-            'name': dictionary.get('name')
-            }
-
-        new_amenity = cls(**required)
-        keys = dictionary.keys()
-
-        if '__class__' in keys:
-            del dictionary['__class__']
-
-        if 'created_at' in keys and type(dictionary['created_at']) is datetime:
-            dictionary['created_at'] = \
-                datetime.fromisoformat(dictionary['created_at'])
-
-        if 'updated_at' in keys and type(dictionary['updated_at']) is datetime:
-            dictionary['updated_at'] = \
-                datetime.fromisoformat(dictionary['updated_at'])
-
-        new_amenity.__dict__.update(dictionary)
-        return new_amenity
+    @property
+    def name(self):
+        return self.__name
+    
+    @name.setter
+    def name(self, name):
+        if type(name) is not str:
+            raise TypeError('name must be a string')
+        self.__name = name

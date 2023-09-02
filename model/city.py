@@ -4,7 +4,7 @@
 """
 
 from model.base import BaseModel
-from datetime import datetime
+
 
 class City(BaseModel):
     """
@@ -16,32 +16,31 @@ class City(BaseModel):
             - name (string): name of the city
             - country (string): Country ID
     """
+    __required = ('name', 'country')
+
 
     def __init__(self, name, country):
         BaseModel.__init__(self)
-        self.name = name
-        self.country = country
+        self.__name = name
+        self.__country = country
 
-    @classmethod
-    def constructor(cls, dictionary):
-        required = {
-            'name': dictionary.get('name'),
-            'country': dictionary.get('country')
-            }
+    @property
+    def name(self):
+        return self.__name
+    
+    @name.setter
+    def name(self, name):
+        if type(name) is not str:
+            raise TypeError('name must be a string')
+        self.__name = name
 
-        new_city = cls(**required)
-        keys = dictionary.keys()
+    @property
+    def country(self):
+        return self.__country
 
-        if '__class__' in keys:
-            del dictionary['__class__']
+    @country.setter
+    def country(self, country_id):
+        if type(country_id) is not str:
+            raise TypeError('country id must be a string')
+        self.__country = country_id
 
-        if 'created_at' in keys and type(dictionary['created_at']) is datetime:
-            dictionary['created_at'] = \
-                datetime.fromisoformat(dictionary['created_at'])
-
-        if 'updated_at' in keys and type(dictionary['updated_at']) is datetime:
-            dictionary['updated_at'] = \
-                datetime.fromisoformat(dictionary['updated_at'])
-
-        new_city.__dict__.update(dictionary)
-        return new_city

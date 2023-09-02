@@ -18,27 +18,27 @@ class TestReview(unittest.TestCase):
 
     def setUp(self):
 
-        john = User("jdoe@mail.com", "password")
+        john = User("jdoe@mail.com", "password", "John", "Doe")
         wifi = Amenity("WiFi")
         country = Country('Uruguay', 'UY')
         city = City('Mercedes', country.id)
         inputs = {
             'name': 'House by the beach',
             'address': 'Ocean Drive 1234',
-            'host': john.dict_key,
-            'city': city.dict_key,
-            'country': country.dict_key,
+            'host': john.key,
+            'city': city.key,
+            'country': country.key,
             'price_per_night': 120,
             'number_rooms': 2,
             'number_bathrooms': 1,
             'max_guests': 3,
-            'amenities': [wifi.dict_key]
+            'amenities': [wifi.key]
             }
 
         place = Place(**inputs)
         mike = User("mike_brown@test.com", "12341234", "Mike", "B")
 
-        self.review = Review(mike.dict_key, place.dict_key, 7, 'Nice, nice.')
+        self.review = Review(mike.key, place.key, 7, 'Nice, nice.')
 
     def test_inheritance(self):
         self.assertIsInstance(self.review, BaseModel)
@@ -59,7 +59,20 @@ class TestReview(unittest.TestCase):
 
     def test_mandatory_fields(self):
         with self.assertRaises(TypeError):
-            review = Review()
+            Review()
+
+    def test_setters(self):
+        with self.assertRaises(TypeError):
+            self.review.user = 22
+
+        with self.assertRaises(TypeError):
+            self.review.place = (1, 2, 3)
+        
+        with self.assertRaises(TypeError):
+            self.review.rating = 3.14
+        
+        with self.assertRaises(TypeError):
+            self.review.comment = 35
 
     def test_inherited_methods(self):
         review = self.review

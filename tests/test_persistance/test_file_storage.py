@@ -88,7 +88,7 @@ class TestFileStorage(unittest.TestCase):
     def test_get(self):
         usr = User("john@mail.com", "123456", "John", "Doe")
         self.storage.add(usr)
-        retrieved = self.storage.get(type(usr).__name__, usr.id)
+        retrieved = self.storage.get(usr.key)
         self.assertEqual(usr, retrieved)
 
     def test_all(self):
@@ -97,11 +97,11 @@ class TestFileStorage(unittest.TestCase):
 
         all = self.storage.all()
         self.assertEqual(len(all), 1)
-        self.assertEqual(all.get(f"User_{usr.id}"), usr)
+        self.assertEqual(all.get(usr.key), usr)
 
         new_user = User('janedoe@mail.com', '654321', 'Jane', 'Doe')
         self.storage.add(new_user)
         all = self.storage.all()
         self.assertEqual(len(all), 2)
-        self.assertEqual(all.get(f"User_{usr.id}"), usr)
+        self.assertEqual(all.get(usr.key), usr)
         self.assertEqual(all, self.storage.all('User'))

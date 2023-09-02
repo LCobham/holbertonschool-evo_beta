@@ -37,21 +37,62 @@ class BaseModel(ABC):
             Datetime objects are converted to string and an attribute is added
             to store the object's type
         """
-        obj_dict = self.__dict__
+
+        # Need to parse keys since private attrs generate name mangling
+        obj_dict = {
+            key.replace(f'_{type(self).__name__}__', ''): self.__dict__[key]
+            for key in self.__dict__
+        }
+
         obj_dict['__class__'] = type(self).__name__
         for attr in ('created_at', 'updated_at'):
             obj_dict[attr] = str(obj_dict.get(attr))
         return obj_dict
 
-    @abstractclassmethod
+    @classmethod
     def constructor(cls, dictionary):
-        pass
+        
+        required = cls.required()
+
+        if 'id' not in dictionary:
+            raise KeyError('id not in dictionary')
+        if type(dictionary.get('id')) is not str:
+            raise TypeError('id must be a string')
+
+        if 'created_at' not in dictionary:
+            raise KeyError('created_at not in dictionary')
+        if type(dictionary.get('created_at')) is not str:
+            raise TypeError('created_at must be a string')
+
+        if 'updated_at' not in dictionary:
+            raise KeyError('updated_at not in dictionary')
+        if type(dictionary.get('created_at')) is not str:
+            raise TypeError('created_at must be a string')
+
+        required_inputs = {
+            key: dictionary.get(key)
+            for key in required
+        }
+
+        created_at = datetime.fromisoformat(dictionary['created_at'])
+        updated_at = datetime.fromisoformat(dictionary['updated_at'])
+
+        new_instance = cls(**required_inputs)
+
+        new_instance.id = dictionary.get('id')
+        new_instance.created_at = created_at
+        new_instance.updated_at = updated_at
+        return new_instance
 
     def __eq__(self, obj):
         if type(obj) is type(self) and self.__dict__ == obj.__dict__:
             return True
         return False
-    
+
+    @classmethod
+    def required(cls):
+        return cls.__dict__[f"_{cls.__name__}__required"]
+
     @property
-    def dict_key(self):
+    def key(self):
         return f"{type(self).__name__}_{self.id}"

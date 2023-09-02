@@ -5,7 +5,6 @@
 """
 
 from model.base import BaseModel
-from datetime import datetime
 
 
 class Country(BaseModel):
@@ -19,35 +18,44 @@ class Country(BaseModel):
             - iso (string): two letter code based on ISO 3166 Alpha-2
             - cities (list): list of registered cities in the country
     """
+    __required = ('name', 'iso', 'cities')
 
-    def __init__(self, name, iso):
+
+    def __init__(self, name, iso, cities=[]):
         BaseModel.__init__(self)
-        self.name = name
-        self.iso = iso
+        self.__name = name
+        self.__iso = iso
+        self.__cities = cities
 
-        # When first created, no cities are registered in that country
-        self.cities = []
+    @property
+    def name(self):
+        return self.__name
+    
+    @name.setter
+    def name(self, country_name):
+        if type(country_name) is not str:
+            raise TypeError('country name must be a string')
+        self.__name = country_name
 
-    @classmethod
-    def constructor(cls, dictionary):
-        required = {
-            'name': dictionary.get('name'),
-            'iso': dictionary.get('iso')
-            }
+    @property
+    def iso(self):
+        return self.__iso
+    
+    @iso.setter
+    def iso(self, iso_code):
+        if type(iso_code) is not str:
+            raise TypeError('iso code must be a string')
+        if len(iso_code) != 2:
+            raise AttributeError('iso code must be a two digit alpha code')
+        self.__name = iso_code.upper()
 
-        new_country = cls(**required)
-        keys = dictionary.keys()
-
-        if '__class__' in keys:
-            del dictionary['__class__']
-
-        if 'created_at' in keys and type(dictionary['created_at']) is datetime:
-            dictionary['created_at'] = \
-                datetime.fromisoformat(dictionary['created_at'])
-
-        if 'updated_at' in keys and type(dictionary['updated_at']) is datetime:
-            dictionary['updated_at'] = \
-                datetime.fromisoformat(dictionary['updated_at'])
-
-        new_country.__dict__.update(dictionary)
-        return new_country
+    @property
+    def cities(self):
+        return self.__cities
+    
+    @cities.setter
+    def cities(self, cities):
+        if type(cities) is not list or \
+            not all(type(city) is str for city in cities):
+            raise TypeError('cities must be a list of city IDs (string)')
+        self.__cities = cities

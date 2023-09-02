@@ -26,10 +26,18 @@ class TestCity(unittest.TestCase):
         self.assertTrue(hasattr(city, 'created_at'))
         self.assertTrue(hasattr(city, 'updated_at'))
         self.assertTrue(hasattr(city, 'name'))
+        self.assertTrue(hasattr(city, 'country'))
 
     def test_mandatory_fields(self):
         with self.assertRaises(TypeError):
-            city = City()
+            City()
+
+    def test_setters(self):
+        with self.assertRaises(TypeError):
+            self.city.name = 22
+
+        with self.assertRaises(TypeError):
+            self.city.country = ['hello']
 
     def test_inherited_methods(self):
         city = self.city
