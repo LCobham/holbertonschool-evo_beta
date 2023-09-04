@@ -39,14 +39,13 @@ class TestUser(unittest.TestCase):
         with self.assertRaises(TypeError):
             user = User(password='password')
 
-
     def test_setters(self):
         with self.assertRaises(TypeError):
             self.user.first_name = 22
 
         with self.assertRaises(TypeError):
             self.user.last_name = (1, 2, 3)
-        
+
         with self.assertRaises(TypeError):
             self.user.email = 3.14
 

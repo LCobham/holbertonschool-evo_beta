@@ -12,7 +12,7 @@ class TestAmenity(unittest.TestCase):
     """ Tests for the Amenity class """
     def setUp(self):
         self.amenity = Amenity('WiFi')
-    
+
     def test_inheritance(self):
         self.assertIsInstance(self.amenity, BaseModel)
         self.assertIsInstance(self.amenity, Amenity)

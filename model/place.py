@@ -6,9 +6,9 @@ from model.base import BaseModel
 
 
 class Place(BaseModel):
-    """ Place Class for AirBnB 
+    """ Place Class for AirBnB
         Attrs:
-            - id (string): UUID4 
+            - id (string): UUID4
             - created_at (datetime): datetime of creation
             - updated_at (datetime): datetime of last update
             - name (string): name of the place
@@ -25,7 +25,7 @@ class Place(BaseModel):
             - max_guests (int): maximum number of guests the host allows
             - amenities (list): list of available amenities' ID
             - reviews (list): list of review IDs by other users
-        
+
         Methods:
             - constructor: Recreate a User object from a dictionary
             previously obtained with the `to_dict()` method
@@ -43,7 +43,7 @@ class Place(BaseModel):
                  city, country,
                  max_guests, amenities=[], description='',
                  latitude=0, longitude=0, reviews=[]):
-        
+
         BaseModel.__init__(self)
         self.__name = name
         self.__description = description
@@ -63,7 +63,7 @@ class Place(BaseModel):
     @property
     def name(self):
         return self.__name
-    
+
     @name.setter
     def name(self, name):
         if type(name) is not str:
@@ -73,7 +73,7 @@ class Place(BaseModel):
     @property
     def description(self):
         return self.__description
-    
+
     @description.setter
     def description(self, description):
         if type(description) is not str:
@@ -83,7 +83,7 @@ class Place(BaseModel):
     @property
     def address(self):
         return self.__address
-    
+
     @address.setter
     def address(self, address):
         if type(address) is not str:
@@ -113,7 +113,7 @@ class Place(BaseModel):
     @property
     def city(self):
         return self.__city
-    
+
     @city.setter
     def city(self, city):
         if type(city) is not str:
@@ -123,7 +123,7 @@ class Place(BaseModel):
     @property
     def country(self):
         return self.__country
-    
+
     @country.setter
     def country(self, country):
         if type(country) is not str:
@@ -133,7 +133,7 @@ class Place(BaseModel):
     @property
     def host(self):
         return self.__host
-    
+
     @host.setter
     def host(self, host):
         if type(host) is not str:
@@ -191,20 +191,20 @@ class Place(BaseModel):
     @property
     def amenities(self):
         return self.__amenities
-    
+
     @amenities.setter
     def amenities(self, amenities):
         if type(amenities) is not list or \
-            not all(type(amenity) is str for amenity in amenities):
+                not all(type(amenity) is str for amenity in amenities):
             raise TypeError('amenities must be a list of amenity IDs')
 
     @property
     def reviews(self):
         return self.__reviews
-    
+
     @reviews.setter
     def reviews(self, reviews):
         if type(reviews) is not list or \
-            not all(type(review) is str for review in reviews):
+                not all(type(review) is str for review in reviews):
             raise TypeError('place reviews must be a string')
         self.__reviews = reviews

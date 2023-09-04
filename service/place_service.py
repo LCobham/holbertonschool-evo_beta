@@ -15,7 +15,8 @@ class PlaceService(ServiceBase):
     """
     __service_class = Place
 
-    def host_is_valid(self, **inputs):
+    @staticmethod
+    def host_is_valid(**inputs):
         from service.user_service import UserService
         host = inputs.get('host')
         usr_srvc = UserService()
@@ -25,7 +26,8 @@ class PlaceService(ServiceBase):
         if not usr_srvc.get(getattr(host, 'id')):
             raise ValueError('user id not found in storage')
 
-    def city_is_valid(self, **inputs):
+    @staticmethod
+    def city_is_valid(**inputs):
         from service.city_service import CityService
         city = inputs.get('city')
         city_srvc = CityService()
@@ -37,7 +39,8 @@ class PlaceService(ServiceBase):
 
 
     # A bit redundant since City is validated & valid city implies valid country
-    def country_is_valid(self, **inputs):
+    @staticmethod
+    def country_is_valid(**inputs):
         from service.country_service import CountryService
         country = inputs.get('country')
         country_srvc = CountryService()
@@ -49,7 +52,8 @@ class PlaceService(ServiceBase):
         
         # Could also validate that entered country = city.country
 
-    def amenities_are_valid(self, **inputs):
+    @staticmethod
+    def amenities_are_valid(**inputs):
         from service.amenity_service import AmenityService
         amenity_array = inputs.get('amenities')
 
@@ -63,8 +67,9 @@ class PlaceService(ServiceBase):
         for id in amenity_array:
             if f"Amenity_{id}" not in all_amenities.keys():
                 raise ValueError('some of the selected amenities were not found')
-    
-    def reviews_are_valid(self, **inputs):
+
+    @staticmethod
+    def reviews_are_valid(**inputs):
         from service.review_service import ReviewService
         review_array = inputs.get('reviews')
 
@@ -79,31 +84,36 @@ class PlaceService(ServiceBase):
             if f"Review_{id}" not in all_reviews.keys():
                 raise ValueError('some of the selected reviews were not found')
 
-    def create(self, **inputs):
-        self.host_is_valid(**inputs)
-        self.country_is_valid(**inputs)
-        self.city_is_valid(**inputs)
-        self.amenities_are_valid(**inputs)
-        self.reviews_are_valid(**inputs)
+    @classmethod
+    def create(cls, **inputs):
+        cls.host_is_valid(**inputs)
+        cls.country_is_valid(**inputs)
+        cls.city_is_valid(**inputs)
+        cls.amenities_are_valid(**inputs)
+        
+        # When a place is created, it has no reviews
+        if 'reviews' in inputs.keys():
+            inputs['reviews'] = []
 
-        return ServiceBase.create(self, **inputs)
-    
-    def updated(self, id, **inputs):
+        return cls.create_base(**inputs)
+
+    @classmethod
+    def updated(cls, id, **inputs):
         input_keys = inputs.keys()
 
         if 'host' in input_keys:
-            self.host_is_valid(**inputs)
+            cls.host_is_valid(**inputs)
         
         if 'country' in input_keys:
-            self.country_is_valid(**inputs)
+            cls.country_is_valid(**inputs)
         
         if 'city' in input_keys:
-            self.city_is_valid(**inputs)
+            cls.city_is_valid(**inputs)
         
         if 'amenities' in input_keys:
-            self.amenities_are_valid(**inputs)
+            cls.amenities_are_valid(**inputs)
         
         if 'reviews' in input_keys:
-            self.reviews_are_valid(**inputs)
+            cls.reviews_are_valid(**inputs)
 
-        return ServiceBase.update(self, id, **inputs)
+        return cls.update_base(id, **inputs)

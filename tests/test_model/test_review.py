@@ -67,10 +67,10 @@ class TestReview(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             self.review.place = (1, 2, 3)
-        
+
         with self.assertRaises(TypeError):
             self.review.rating = 3.14
-        
+
         with self.assertRaises(TypeError):
             self.review.comment = 35
 

@@ -14,7 +14,7 @@ class TestCity(unittest.TestCase):
     def setUp(self):
         country = Country('Uruguay', 'UY')
         self.city = City('Montevideo', country.id)
-    
+
     def test_inheritance(self):
         self.assertIsInstance(self.city, BaseModel)
         self.assertIsInstance(self.city, City)

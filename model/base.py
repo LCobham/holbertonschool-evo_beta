@@ -51,7 +51,6 @@ class BaseModel(ABC):
 
     @classmethod
     def constructor(cls, dictionary):
-        
         required = cls.required()
 
         if 'id' not in dictionary:

@@ -8,16 +8,15 @@ from model.base import BaseModel
 
 class City(BaseModel):
     """
-        Country Class for AirBnB 
+        Country Class for AirBnB
         Attrs:
-            - id (string): UUID4 
+            - id (string): UUID4
             - created_at (datetime): datetime of creation
             - updated_at (datetime): datetime of last update
             - name (string): name of the city
             - country (string): Country ID
     """
     __required = ('name', 'country')
-
 
     def __init__(self, name, country):
         BaseModel.__init__(self)
@@ -27,7 +26,7 @@ class City(BaseModel):
     @property
     def name(self):
         return self.__name
-    
+
     @name.setter
     def name(self, name):
         if type(name) is not str:
@@ -43,4 +42,3 @@ class City(BaseModel):
         if type(country_id) is not str:
             raise TypeError('country id must be a string')
         self.__country = country_id
-

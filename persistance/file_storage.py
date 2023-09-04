@@ -31,17 +31,21 @@ class FileStorage(Persistance):
     def reload(self):
         """ Reload all objects into the self.__objects field """
         from model import classes
+
+        # Important that this is done before trying to read from file:
+        # ensures that storage.__objects is empty if no filename when
+        # storage.reload() is called
+        self.__objects = {}
         try:
             with open(self.__filename, "r", encoding="utf-8") as f:
                 reload = json.load(f)
 
-            self.__objects = {}
             for key, value in reload.items():
                 obj_cls = classes[value['__class__']]
                 self.__objects[key] = obj_cls.constructor(value)
 
         except FileNotFoundError:
-            sys.stderr.write("File path was not found")
+            pass
 
     def add(self, object):
         """ Adds an element to storage without committing changes """

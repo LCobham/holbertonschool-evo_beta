@@ -27,11 +27,6 @@ class TestBaseModel(unittest.TestCase):
         self.tmp = Tmp()
         self.tmp2 = Tmp()
 
-    @unittest.skip("No abstracmethods in BaseModel yet")
-    def test_no_direct_instanciation(self):
-        with self.assertRaises(TypeError):
-            BaseModel()
-
     def test_correct_attrs(self):
         self.assertEqual(type(self.tmp.id), str)
         self.assertEqual(type(self.tmp.created_at), datetime)

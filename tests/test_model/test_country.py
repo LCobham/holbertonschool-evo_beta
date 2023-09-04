@@ -12,7 +12,7 @@ class TestCountry(unittest.TestCase):
     """ Tests for the Country class """
     def setUp(self):
         self.country = Country('Uruguay', 'UY')
-    
+
     def test_inheritance(self):
         self.assertIsInstance(self.country, BaseModel)
         self.assertIsInstance(self.country, Country)
@@ -35,7 +35,7 @@ class TestCountry(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             self.country.iso = (1, 2, 3)
-        
+
         with self.assertRaises(AttributeError):
             self.country.iso = 'STRING IS TOO LONG'
 

@@ -4,7 +4,7 @@
     Services Classes in the AirBnB project
 """
 
-from abc import ABC
+from abc import ABC, abstractclassmethod
 from model import storage
 from datetime import datetime
 
@@ -16,15 +16,28 @@ class ServiceBase(ABC):
             - __service_class: class to which the service is provided
             (ex: UserService -> __service_class = User)
         Methods:
-            - create: Handles Business logic for creating objects
+            - create_base: Basic "create" functionality. Made so that
+            create method can be extended by performing some class-specific
+            validations before calling cls.create_base().
+            - update_base: Base for update functionality. Updates the fields
+            of an object in storage. Made so that update mathod extends this
+            core functionality.
             - get: Gets an item from the storage with a given key
-            - update: Updates the fields of an object in storage
             - delete: Deletes an item from the storage
     """
     __service_class = None
 
-    def create(self, **inputs):
-        service_cls = type(self).service_class()
+    @abstractclassmethod
+    def create(cls, **inputs):
+        pass
+
+    @abstractclassmethod
+    def update(cls, **inputs):
+        pass
+
+    @classmethod
+    def create_base(cls, **inputs):
+        service_cls = cls.service_class()
         required_inputs = service_cls.required()
 
         # Get only relevant information
@@ -36,8 +49,10 @@ class ServiceBase(ABC):
 
         return new_instance
 
-    def update(self, id, **inputs):
-        srvc_cls = type(self).service_class()
+    @classmethod
+    def update_base(cls, id, **inputs):
+        srvc_cls = cls.service_class()
+
         key = f"{srvc_cls.__name__}_{id}"
 
         object = storage.get(key)
@@ -46,9 +61,9 @@ class ServiceBase(ABC):
         
         required = srvc_cls.required()
 
-        subset = {
-            inputs[key] for key in required and key in inputs.keys()
-        }
+        intersection = list(set(required).intersection(inputs.keys()))
+
+        subset = { key: inputs[key] for key in intersection }
 
         object.updated_at = datetime.now()
 
@@ -60,8 +75,9 @@ class ServiceBase(ABC):
         storage.save()
         return object
 
-    def delete(self, key):
-        srvc_cls = type(self).service_class()
+    @classmethod
+    def delete(cls, id):
+        srvc_cls = cls.service_class()
         key = f"{srvc_cls.__name__}_{id}"
 
         object = storage.get(key)
@@ -73,13 +89,15 @@ class ServiceBase(ABC):
 
         return object
 
-    def get(self, id):
-        srvc_cls = type(self).service_class()
+    @classmethod
+    def get(cls, id):
+        srvc_cls = cls.service_class()
         key = f"{srvc_cls.__name__}_{id}"
         return storage.get(key)
 
-    def all(self):
-        srvc_cls = type(self).service_class()
+    @classmethod
+    def all(cls):
+        srvc_cls = cls.service_class()
         return storage.all(srvc_cls.__name__)
 
     @classmethod

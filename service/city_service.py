@@ -6,7 +6,6 @@
 """
 
 from model.city import City
-from service.country_service import CountryService
 from service.service import ServiceBase
 
 
@@ -16,22 +15,40 @@ class CityService(ServiceBase):
     """
     __service_class = City
 
-    def country_is_valid(self, **inputs):
-        country = inputs.get('country')
-        country_svc = CountryService()
+    @staticmethod
+    def country_is_valid(country_id):
+        from service.country_service import CountryService
 
-        # Use get() method so that no KeyError is raised if user not found
-        # and getattr() function just in case that get() returns None 
-        if not country_svc.get(getattr(country, 'id')):
+        if not CountryService.get(country_id):
             raise ValueError('country id not found in storage')
 
-    def create(self, **inputs):
-        self.country_is_valid(**inputs)
-        return ServiceBase.create(self, **inputs)
-            
+    @classmethod
+    def create(cls, **inputs):
+        from service.country_service import CountryService
 
-    def update(self, id, **inputs):
         if 'country' in inputs.keys():
-            self.country_is_valid(**inputs)
+            CityService.country_is_valid(inputs['country'])
 
-        return ServiceBase.update(id, **inputs)
+        # Create new city
+        new_city = CityService.create_base(**inputs)
+
+        # Add city to the list of cities of the country
+        country = CountryService.get(inputs.get('country'))
+
+        # Sanity check. But this is checked in create_base
+        if not country:
+            raise AttributeError('country not found')
+
+        updated_cities = country.cities
+        updated_cities.append(new_city.id)
+
+        CountryService.update(country.id, **{'cities': updated_cities})
+
+        return new_city
+
+    @classmethod
+    def update(cls, id, **inputs):
+        if 'country' in inputs.keys():
+            cls.country_is_valid(inputs['country'])
+
+        return cls.update_base(id, **inputs)

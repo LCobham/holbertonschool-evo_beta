@@ -13,20 +13,23 @@ class UserService(ServiceBase):
     """
     __service_class = User
 
-    def validate_mail_is_unique(self, email):
-        users = self.all().values()
+    @classmethod
+    def validate_mail_is_unique(cls, email):
+        users = cls.all().values()
 
         search_email = list(filter(lambda x: x.email == email, users))
         
         if search_email:
             raise ValueError('email is not unique')
 
-    def create(self, **inputs):
-        self.validate_mail_is_unique(inputs.get('email'))
-        return ServiceBase.create(self, **inputs)
+    @classmethod
+    def create(cls, **inputs):
+        cls.validate_mail_is_unique(inputs.get('email'))
+        return cls.create_base(**inputs)
 
-    def update(self, id, **inputs):
+    @classmethod
+    def update(cls, id, **inputs):
         if 'email' in inputs.keys():
-            self.validate_mail_is_unique(inputs.get('email'))
+            cls.validate_mail_is_unique(inputs.get('email'))
 
-        return ServiceBase.update(self, id, **inputs)
+        return cls.update_base(id, **inputs)

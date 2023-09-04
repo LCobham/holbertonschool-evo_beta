@@ -17,7 +17,8 @@ class ReviewService(ServiceBase):
     """
     __service_class = Review
 
-    def user_is_valid(self, **inputs):
+    @staticmethod
+    def user_is_valid(**inputs):
         from service.user_service import UserService
         usr = inputs.get('user')
         usr_srvc = UserService()
@@ -27,7 +28,8 @@ class ReviewService(ServiceBase):
         if not usr_srvc.get(getattr(usr, 'id')):
             raise ValueError('user id not found in storage')
 
-    def place_is_valid(self, **inputs):
+    @staticmethod
+    def place_is_valid(**inputs):
         from service.place_service import PlaceService
         place = inputs.get('place')
         place_srvc = PlaceService()
@@ -37,24 +39,25 @@ class ReviewService(ServiceBase):
         if not place_srvc.get(getattr(place, 'id')):
             raise ValueError('user id not found in storage')        
 
-    def create(self, **inputs):
+    @classmethod
+    def create(cls, **inputs):
         from service.place_service import PlaceService
 
-        self.user_is_valid(**inputs)
-        self.place_is_valid(**inputs)
+        cls.user_is_valid(**inputs)
+        cls.place_is_valid(**inputs)
 
-        new_review = ServiceBase.create(self, **inputs)
+        new_review = cls.create_base(cls, **inputs)
 
         # When a review is created, add to the list of reviews of that place
-        place_srvc = PlaceService()
-        place = place_srvc.get(inputs.get('place'))
+        place = PlaceService.get(inputs.get('place'))
 
         updated_reviews = place.reviews.update({new_review.key: new_review})
 
-        place_srvc.update(place.id,**{'reviews': updated_reviews})
+        PlaceService.update(place.id,**{'reviews': updated_reviews})
 
         return new_review
 
+    @classmethod
     def updated(self, id, **inputs):
         # Modified this method so that only comment and rating can be updated
         # but not the place id not the user id
@@ -67,10 +70,9 @@ class ReviewService(ServiceBase):
             raise KeyError(f'{srvc_cls.__name__} was not found')
         
         required = ('comment', 'rating')
+        intersection = list(set(required).intersection(inputs.keys()))
 
-        subset = {
-            inputs[key] for key in required and key in inputs.keys()
-        }
+        subset = { key: inputs[key] for key in intersection }
 
         object.updated_at = datetime.now()
 

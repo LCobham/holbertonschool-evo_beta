@@ -63,28 +63,28 @@ class TestPlace(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             self.place.description = (1, 2, 3)
-        
+
         with self.assertRaises(TypeError):
             self.place.address = ['a list', 'of strings']
-        
+
         with self.assertRaises(TypeError):
-            self.place.host = set(['a', 2, 4 ,1])
+            self.place.host = set(['a', 2, 4, 1])
 
         with self.assertRaises(TypeError):
             self.place.latitude = 'string'
-        
+
         with self.assertRaises(TypeError):
             self.place.longitude = 8
 
         with self.assertRaises(AttributeError):
             self.place.number_bathrooms = -3
-        
+
         with self.assertRaises(TypeError):
             self.place.number_rooms = (1, 2, 3)
-        
+
         with self.assertRaises(TypeError):
             self.place.max_guests = 'string'
-        
+
         with self.assertRaises(TypeError):
             self.place.amenities = ('string', 'tuple')
 
