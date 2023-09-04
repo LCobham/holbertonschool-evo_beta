@@ -42,23 +42,23 @@ class Place(BaseModel):
                  number_rooms, number_bathrooms,
                  city, country,
                  max_guests, amenities=[], description='',
-                 latitude=0, longitude=0, reviews=[]):
+                 latitude=33.33, longitude=33.33, reviews=[]):
 
         BaseModel.__init__(self)
-        self.__name = name
-        self.__description = description
-        self.__address = address
-        self.__latitude = latitude
-        self.__longitude = longitude
-        self.__city = city
-        self.__country = country
-        self.__host = host
-        self.__price_per_night = price_per_night
-        self.__max_guests = max_guests
-        self.__number_rooms = number_rooms
-        self.__number_bathrooms = number_bathrooms
-        self.__amenities = amenities
-        self.__reviews = reviews
+        self.name = name
+        self.description = description
+        self.address = address
+        self.latitude = latitude
+        self.longitude = longitude
+        self.city = city
+        self.country = country
+        self.host = host
+        self.price_per_night = price_per_night
+        self.max_guests = max_guests
+        self.number_rooms = number_rooms
+        self.number_bathrooms = number_bathrooms
+        self.amenities = amenities
+        self.reviews = reviews
 
     @property
     def name(self):
@@ -197,6 +197,7 @@ class Place(BaseModel):
         if type(amenities) is not list or \
                 not all(type(amenity) is str for amenity in amenities):
             raise TypeError('amenities must be a list of amenity IDs')
+        self.__amenities = amenities
 
     @property
     def reviews(self):

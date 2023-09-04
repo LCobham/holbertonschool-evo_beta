@@ -20,8 +20,8 @@ class City(BaseModel):
 
     def __init__(self, name, country):
         BaseModel.__init__(self)
-        self.__name = name
-        self.__country = country
+        self.name = name
+        self.country = country
 
     @property
     def name(self):

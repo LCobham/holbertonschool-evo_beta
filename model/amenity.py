@@ -22,7 +22,7 @@ class Amenity(BaseModel):
 
     def __init__(self, name):
         BaseModel.__init__(self)
-        self.__name = name
+        self.name = name
 
     @property
     def name(self):

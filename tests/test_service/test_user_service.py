@@ -4,12 +4,13 @@
 """
 
 from model.user import User
-from service.user_service import UserService
+from service.user_service import UserService, HASH_ITERATIONS
 import unittest
 from unittest.mock import patch
 from model import storage
 from persistance.file_storage import FileStorage
 from datetime import datetime
+from hashlib import pbkdf2_hmac
 import os
 
 
@@ -64,7 +65,15 @@ class TestUserService(unittest.TestCase):
 
         # Test attrs are present & correct attribute types
         for key in u1:
-            self.assertEqual(getattr(bill, key), u1[key])
+            if key != 'password':
+                self.assertEqual(getattr(bill, key), u1[key])
+            else:
+                hash = pbkdf2_hmac(
+                    'sha256', u1['password'].encode('utf-8'),
+                    bill.id.encode('utf-8'), HASH_ITERATIONS
+                )
+                self.assertEqual(getattr(bill, key), hash.hex())
+
         self.assertTrue(type(bill.id) is str)
         self.assertTrue(type(bill.created_at) is datetime)
         self.assertTrue(type(bill.updated_at) is datetime)

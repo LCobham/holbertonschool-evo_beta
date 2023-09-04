@@ -18,61 +18,55 @@ class ReviewService(ServiceBase):
     __service_class = Review
 
     @staticmethod
-    def user_is_valid(**inputs):
+    def user_is_valid(user_id):
         from service.user_service import UserService
-        usr = inputs.get('user')
-        usr_srvc = UserService()
-
-        # Use get() method so that no KeyError is raised if user not found
-        # and getattr() function just in case that get() returns None 
-        if not usr_srvc.get(getattr(usr, 'id')):
+        if not UserService.get(user_id):
             raise ValueError('user id not found in storage')
 
     @staticmethod
-    def place_is_valid(**inputs):
+    def place_is_valid(place_id):
         from service.place_service import PlaceService
-        place = inputs.get('place')
-        place_srvc = PlaceService()
-
-        # Use get() method so that no KeyError is raised if user not found
-        # and getattr() function just in case that get() returns None 
-        if not place_srvc.get(getattr(place, 'id')):
-            raise ValueError('user id not found in storage')        
+        if not PlaceService.get(place_id):
+            raise ValueError('place id not found in storage')
 
     @classmethod
     def create(cls, **inputs):
         from service.place_service import PlaceService
 
-        cls.user_is_valid(**inputs)
-        cls.place_is_valid(**inputs)
+        if 'user' in inputs.keys():
+            cls.user_is_valid(inputs['user'])
 
-        new_review = cls.create_base(cls, **inputs)
+        if 'place' in inputs.keys():
+            cls.place_is_valid(inputs['place'])
+
+        new_review = cls.create_base(**inputs)
 
         # When a review is created, add to the list of reviews of that place
         place = PlaceService.get(inputs.get('place'))
 
-        updated_reviews = place.reviews.update({new_review.key: new_review})
+        updated_reviews = place.reviews
+        updated_reviews.append(new_review.id)
 
-        PlaceService.update(place.id,**{'reviews': updated_reviews})
+        PlaceService.update(place.id, **{'reviews': updated_reviews})
 
         return new_review
 
     @classmethod
-    def updated(self, id, **inputs):
+    def update(cls, id, **inputs):
         # Modified this method so that only comment and rating can be updated
         # but not the place id not the user id
 
-        srvc_cls = type(self).service_class()
+        srvc_cls = cls.service_class()
         key = f"{srvc_cls.__name__}_{id}"
 
         object = storage.get(key)
         if not object:
             raise KeyError(f'{srvc_cls.__name__} was not found')
-        
+
         required = ('comment', 'rating')
         intersection = list(set(required).intersection(inputs.keys()))
 
-        subset = { key: inputs[key] for key in intersection }
+        subset = {key: inputs[key] for key in intersection}
 
         object.updated_at = datetime.now()
 

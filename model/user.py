@@ -12,7 +12,7 @@ class User(BaseModel):
             - created_at (datetime): datetime of creation
             - updated_at (datetime): datetime of last update
             - email (string): email of the user
-            - password (string): user password
+            - password (string): user hashed password using id as salt
             - first_name (string): User's first name
             - last_name (string): User's last name
 
@@ -25,10 +25,10 @@ class User(BaseModel):
     def __init__(self, email, password, first_name, last_name):
         BaseModel.__init__(self)
 
-        self.__email = email
-        self.__password = password
-        self.__first_name = first_name
-        self.__last_name = last_name
+        self.email = email
+        self.password = password
+        self.first_name = first_name
+        self.last_name = last_name
 
     @property
     def email(self):
@@ -48,6 +48,7 @@ class User(BaseModel):
     def password(self, pswd):
         if type(pswd) is not str:
             raise TypeError('password must be a string')
+
         self.__password = pswd
 
     @property

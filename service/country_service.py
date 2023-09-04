@@ -20,7 +20,7 @@ class CountryService(ServiceBase):
         # Ensure countries have 0 cities at creation
         inputs['cities'] = []
         return cls.create_base(**inputs)
-    
+
     @classmethod
     def update(cls, id, **inputs):
         return cls.update_base(id, **inputs)

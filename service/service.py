@@ -58,12 +58,12 @@ class ServiceBase(ABC):
         object = storage.get(key)
         if not object:
             raise KeyError(f'{srvc_cls.__name__} was not found')
-        
+
         required = srvc_cls.required()
 
         intersection = list(set(required).intersection(inputs.keys()))
 
-        subset = { key: inputs[key] for key in intersection }
+        subset = {key: inputs[key] for key in intersection}
 
         object.updated_at = datetime.now()
 
@@ -83,7 +83,7 @@ class ServiceBase(ABC):
         object = storage.get(key)
         if not object:
             raise KeyError(f'{srvc_cls.__name__} was not found')
-        
+
         storage.remove(object)
         storage.save()
 

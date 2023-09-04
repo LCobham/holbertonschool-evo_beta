@@ -28,7 +28,7 @@ class AmenityService(ServiceBase):
         if 'name' in inputs.keys():
             cls.validate_name_is_unique(inputs['name'])
         return cls.create_base(**inputs)
-    
+
     @classmethod
     def update(cls, id, **inputs):
         if 'name' in inputs.keys():

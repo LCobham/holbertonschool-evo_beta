@@ -24,10 +24,10 @@ class Review(BaseModel):
 
     def __init__(self, user, place, rating, comment):
         BaseModel.__init__(self)
-        self.__user = user
-        self.__place = place
-        self.__rating = rating
-        self.__comment = comment
+        self.user = user
+        self.place = place
+        self.rating = rating
+        self.comment = comment
 
     @property
     def user(self):

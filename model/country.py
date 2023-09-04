@@ -22,9 +22,9 @@ class Country(BaseModel):
 
     def __init__(self, name, iso, cities=[]):
         BaseModel.__init__(self)
-        self.__name = name
-        self.__iso = iso
-        self.__cities = cities
+        self.name = name
+        self.iso = iso
+        self.cities = cities
 
     @property
     def name(self):
